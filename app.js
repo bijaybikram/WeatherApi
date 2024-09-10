@@ -1,0 +1,58 @@
+const date = document.getElementById("date");
+const city = document.getElementById("city");
+const temp = document.getElementById("temp");
+const tempImg = document.getElementById("tempImg");
+const description = document.getElementById("description");
+const tempMax = document.getElementById("tempMax");
+const tempMin = document.getElementById("tempMin");
+const apiKey = "12a7d15c5c7bc57703b9a8c24e1bb0cd";
+const cityName = "kathmandu";
+
+const months = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+
+let dateObj = new Date();
+let month = months[dateObj.getUTCMonth()];
+let day = dateObj.getUTCDate() - 1;
+let year = dateObj.getUTCFullYear();
+
+date.innerHTML = `${month} ${day} ${year}`;
+
+const app = document.getElementById("app");
+
+const getWeather = async () => {
+  try {
+    const cityName = document.getElementById("search-bar-input").value;
+    const weatherDataFetch = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    const weatherData = await weatherDataFetch.json();
+    console.log(weatherData);
+
+    city.innerHTML = weatherData.name;
+    description.innerHTML = weatherData.weather[0].description;
+    tempImg.innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png"/>`;
+    temp.innerHTML = `<h2>${Math.round(weatherData.main.temp)}°F</h2>`;
+    tempMin.innerHTML = `${Math.round(weatherData.main.temp_min)}°F`;
+    tempMax.innerHTML = `${Math.round(weatherData.main.temp_max)}°F`;
+  } catch (error) {}
+};
+
+getWeather();
